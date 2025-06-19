@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAKIB</title>
+    <style>
+        body {
+  margin: 0;
+  padding: 0;
+  background-color: pink;
+  height: 100vh;
+  overflow: hidden;
+  font-family: 'Arial', sans-serif;
+  position: relative;
+  cursor: pointer;
+}
+
+body{
+    background-image: url(https://i.postimg.cc/gjgG1TXN/506847204-122168182808500915-8381517863071601997-n.jpg);
+            background-size: cover;   
+            background-position: center; 
+            background-repeat: no-repeat;
+}
+
+canvas#fireworks {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.love-container {
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 150px;
+  text-align: center;
+  z-index: 2;
+}
+
+.letter-n {
+  font-size: 100px;
+  font-weight: 900;
+  background: linear-gradient(45deg, #00ff62, #ff00aa);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  transition: all 0.5s ease;
+}
+
+.letter-n.color-1 {
+  background: linear-gradient(45deg, #00ffff, #ff00ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+}
+
+.letter-n.color-2 {
+  background: linear-gradient(45deg, #00ff00, #0000ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 15px rgba(0, 255, 0, 0.6);
+}
+
+
+
+.full-name {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(0deg);
+  font-size: 42px;
+  font-weight: 900;
+  color: #ffffff;
+  text-align: center;
+  user-select: none;
+  opacity: 0;
+  z-index: 20;
+  animation: circleGlow 4s linear forwards, heartbeat 1.2s ease-in-out infinite 4s;
+  filter: drop-shadow(0 0 10px #f50057);
+  text-shadow:
+    0 0 10px #ff4081,
+    0 0 20px #f50057,
+    0 0 30px #ff4081;
+}
+
+@keyframes circleGlow {
+  0% {
+    opacity: 0;
+    filter: drop-shadow(0 0 0 #f50057);
+    transform: translate(-50%, -50%) rotate(0deg) scale(0.6);
+    color: #fcff40;
+    text-shadow: 0 0 10px #ff4081, 0 0 20px #f50057;
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(180deg) scale(1.2);
+    color: #00eeff;
+    text-shadow: 0 0 30px #ff1744, 0 0 50px #f50057;
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(360deg) scale(1);
+    color: #00ff22;
+    text-shadow: 0 0 25px #f50057, 0 0 45px #ff4081;
+  }
+}
+
+@keyframes heartbeat {
+  0%, 100% {
+    transform: translate(-50%, -50%) rotate(360deg) scale(1);
+  }
+  25% {
+    transform: translate(-50%, -50%) rotate(360deg) scale(1.1);
+  }
+  40% {
+    transform: translate(-50%, -50%) rotate(360deg) scale(0.95);
+  }
+  60% {
+    transform: translate(-50%, -50%) rotate(360deg) scale(1.05);
+  }
+  80% {
+    transform: translate(-50%, -50%) rotate(360deg) scale(0.98);
+  }
+}
+
+    </style>
+</head>
+<body onclick="startLove()">
+  <audio id="romantic-audio" src="romantic.mp3" preload="auto"></audio>
+  <canvas id="fireworks"></canvas>
+  <script>
+    let loveShown = false;
+let clickCount = 0;
+
+function startLove() {
+  if (loveShown) return;
+
+  const container = document.createElement('div');
+  container.className = 'love-container';
+  container.innerHTML = '❤️';
+  document.body.appendChild(container);
+
+  const n = document.createElement('div');
+  n.className = 'letter-n';
+  n.innerHTML = 'S';
+  container.appendChild(n);
+
+  n.addEventListener('click', () => handleNClick(n));
+
+  loveShown = true;
+}
+
+function handleNClick(n) {
+  clickCount++;
+
+  if (clickCount === 1) {
+    launchFireworks('default');
+  } else if (clickCount === 2) {
+    n.classList.add('color-1');
+    launchFireworks('cool');
+  } else if (clickCount === 3) {
+    n.classList.remove('color-1');
+    n.classList.add('color-2');
+    launchFireworks('hot');
+  } else if (clickCount === 4) {
+    showName();
+  }
+}
+
+function showName() {
+  const name = document.createElement('div');
+  name.className = 'full-name';
+  name.innerHTML = 'SAKIB HASAN';
+  document.body.appendChild(name);
+}
+
+function launchFireworks(style = 'default') {
+  const canvas = document.getElementById('fireworks');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const colors = {
+    default: ['#ff0000', '#ff9900', '#ffff00'],
+    cool: ['#00ffff', '#6600ff', '#cc66ff'],
+    hot: ['#00ff00', '#0000ff', '#ffff00']
+  };
+
+  const selected = colors[style] || colors.default;
+
+  const particles = [];
+  const centerX = canvas.width / 2;
+  const centerY = canvas.height / 2;
+
+  for (let i = 0; i < 150; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = Math.random() * 6 + 2;
+    particles.push({
+      x: centerX,
+      y: centerY,
+      dx: Math.cos(angle) * speed,
+      dy: Math.sin(angle) * speed,
+      life: 100,
+      radius: Math.random() * 3 + 2,
+      color: selected[Math.floor(Math.random() * selected.length)]
+    });
+  }
+
+  function animate() {
+    ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    particles.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.shadowColor = p.color;
+      ctx.shadowBlur = 15;
+      ctx.fill();
+      p.x += p.dx;
+      p.y += p.dy;
+      p.life--;
+    });
+
+    if (particles.some(p => p.life > 0)) {
+      requestAnimationFrame(animate);
+    }
+  }
+
+  animate();
+}
+
+  </script>
+</body>
+</html>
